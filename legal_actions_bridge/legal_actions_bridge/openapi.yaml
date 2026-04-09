@@ -1,105 +1,27 @@
 openapi: 3.1.0
 info:
-  title: Legal Actions Bridge for ChatGPT
+  title: Hourei + Labor Bridge for ChatGPT (Hobby-safe)
   version: 1.0.0
   description: >-
-    tax-law-mcp, hourei-mcp-server, labor-law-mcp の主要機能を ChatGPT Actions から使うための橋渡しAPI。
+    hourei-mcp-server と labor-law-mcp の主要機能を、Vercel Hobby の関数数制限に収まる形で
+    ChatGPT Actions から使うための橋渡しAPI。
 servers:
   - url: https://YOUR-VERCEL-URL.vercel.app
 paths:
-  /api/tax/get-law:
+  /api/hourei:
     get:
-      operationId: tax_get_law
-      summary: 税法の条文を取得
+      operationId: hourei_action
+      summary: 一般法令検索・法令本文XML取得・改正履歴XML取得
       parameters:
         - in: query
-          name: law_name
+          name: action
           required: true
-          schema: { type: string }
-        - in: query
-          name: article
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: OK
-  /api/tax/search-law:
-    get:
-      operationId: tax_search_law
-      summary: 税法を検索
-      parameters:
+          schema:
+            type: string
+            enum: [search_law, get_law_data, get_law_revision]
         - in: query
           name: keyword
-          required: true
-          schema: { type: string }
-      responses:
-        '200': { description: OK }
-  /api/tax/get-tsutatsu:
-    get:
-      operationId: tax_get_tsutatsu
-      summary: 税務通達を取得
-      parameters:
-        - in: query
-          name: tsutatsu_name
-          required: true
-          schema: { type: string }
-        - in: query
-          name: number
-          required: true
-          schema: { type: string }
-      responses:
-        '200': { description: OK }
-  /api/tax/list-tsutatsu:
-    get:
-      operationId: tax_list_tsutatsu
-      summary: 対応通達の一覧を取得
-      responses:
-        '200': { description: OK }
-  /api/tax/list-saiketsu:
-    get:
-      operationId: tax_list_saiketsu
-      summary: 税目別の裁決事例一覧を取得
-      parameters:
-        - in: query
-          name: tax_type
           required: false
-          schema: { type: string }
-      responses:
-        '200': { description: OK }
-  /api/tax/search-saiketsu:
-    get:
-      operationId: tax_search_saiketsu
-      summary: 裁決事例を検索
-      parameters:
-        - in: query
-          name: keyword
-          required: true
-          schema: { type: string }
-      responses:
-        '200': { description: OK }
-  /api/tax/get-saiketsu:
-    get:
-      operationId: tax_get_saiketsu
-      summary: 裁決事例本文を取得
-      parameters:
-        - in: query
-          name: collection_no
-          required: true
-          schema: { type: integer }
-        - in: query
-          name: case_no
-          required: true
-          schema: { type: integer }
-      responses:
-        '200': { description: OK }
-  /api/hourei/search-law:
-    get:
-      operationId: hourei_search_law
-      summary: 法令名や法令番号で法令を検索
-      parameters:
-        - in: query
-          name: keyword
-          required: true
           schema: { type: string }
         - in: query
           name: category
@@ -107,38 +29,33 @@ paths:
           schema:
             type: string
             enum: ['1', '2', '3', '4', '5']
-      responses:
-        '200': { description: OK }
-  /api/hourei/get-law-data:
-    get:
-      operationId: hourei_get_law_data
-      summary: 法令番号で法令本文XMLを取得
-      parameters:
         - in: query
           name: lawNum
-          required: true
+          required: false
           schema: { type: string }
       responses:
-        '200': { description: OK }
-  /api/hourei/get-law-revision:
+        '200':
+          description: OK
+  /api/labor:
     get:
-      operationId: hourei_get_law_revision
-      summary: 法令番号で改正履歴XMLを取得
+      operationId: labor_action
+      summary: 労働法令検索・条文取得・厚労省通達検索/取得・JAISH通達検索/取得
       parameters:
         - in: query
-          name: lawNum
+          name: action
           required: true
-          schema: { type: string }
-      responses:
-        '200': { description: OK }
-  /api/labor/search-law:
-    get:
-      operationId: labor_search_law
-      summary: 労働・社会保険関連法令を検索
-      parameters:
+          schema:
+            type: string
+            enum:
+              - search_law
+              - get_law
+              - search_mhlw_tsutatsu
+              - get_mhlw_tsutatsu
+              - search_jaish_tsutatsu
+              - get_jaish_tsutatsu
         - in: query
           name: keyword
-          required: true
+          required: false
           schema: { type: string }
         - in: query
           name: law_type
@@ -150,16 +67,9 @@ paths:
           name: limit
           required: false
           schema: { type: integer, default: 10 }
-      responses:
-        '200': { description: OK }
-  /api/labor/get-law:
-    get:
-      operationId: labor_get_law
-      summary: 労働・社会保険関連法令の条文を取得
-      parameters:
         - in: query
           name: law_name
-          required: true
+          required: false
           schema: { type: string }
         - in: query
           name: article
@@ -179,61 +89,22 @@ paths:
           schema:
             type: string
             enum: [markdown, toc]
-      responses:
-        '200': { description: OK }
-  /api/labor/search-mhlw-tsutatsu:
-    get:
-      operationId: labor_search_mhlw_tsutatsu
-      summary: 厚労省通達をキーワード検索
-      parameters:
-        - in: query
-          name: keyword
-          required: true
-          schema: { type: string }
         - in: query
           name: page
           required: false
           schema: { type: integer, default: 0 }
-      responses:
-        '200': { description: OK }
-  /api/labor/get-mhlw-tsutatsu:
-    get:
-      operationId: labor_get_mhlw_tsutatsu
-      summary: 厚労省通達本文を取得
-      parameters:
         - in: query
           name: data_id
-          required: true
+          required: false
           schema: { type: string }
         - in: query
           name: page_no
           required: false
           schema: { type: integer, default: 1 }
-      responses:
-        '200': { description: OK }
-  /api/labor/search-jaish-tsutatsu:
-    get:
-      operationId: labor_search_jaish_tsutatsu
-      summary: JAISH安衛通達をキーワード検索
-      parameters:
-        - in: query
-          name: keyword
-          required: true
-          schema: { type: string }
-        - in: query
-          name: limit
-          required: false
-          schema: { type: integer, default: 20 }
-      responses:
-        '200': { description: OK }
-  /api/labor/get-jaish-tsutatsu:
-    get:
-      operationId: labor_get_jaish_tsutatsu
-      summary: JAISH安衛通達本文を取得
-      parameters:
         - in: query
           name: path
-          required: true
+          required: false
           schema: { type: string }
       responses:
-        '200': { description: OK }
+        '200':
+          description: OK

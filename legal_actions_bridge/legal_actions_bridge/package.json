@@ -1,12 +1,12 @@
 {
-  "name": "legal-actions-bridge",
-  "version": "1.0.0",
+  "name": "legal-actions-bridge-hobby-fixed",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=20"
-  },
   "dependencies": {
     "iconv-lite": "^0.6.3"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }

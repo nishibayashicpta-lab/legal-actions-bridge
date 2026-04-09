@@ -1,17 +1,18 @@
-このフォルダは、ChatGPT の Actions で tax-law-mcp / hourei-mcp-server / labor-law-mcp を使うための橋渡し一式です。
+これは Vercel Hobby の「12個までの関数数制限」に収まるように、hourei / labor のAPIを 2 本にまとめた版です。
 
-【あなたがやること】
-1. GitHub のアカウントを作る
-2. 新しいリポジトリを1つ作る
-3. このフォルダの中身をそのリポジトリにアップロードする
-4. Vercel のアカウントを作る
-5. Vercel でそのリポジトリを読み込んで Deploy する
-6. 発行されたURLを openapi.yaml の先頭 servers.url に入れる
-7. ChatGPT の GPT 作成画面 → Actions → Schema に openapi.yaml を貼る
-8. Instructions に gpt-instructions.txt を貼る
+入っているもの:
+- api/hourei.js
+- api/labor.js
+- lib/common.js
+- lib/labor-egov.js
+- lib/labor-mhlw.js
+- lib/labor-jaish.js
+- openapi.yaml
+- package.json
+- vercel.json
 
-【補足】
-- 税法は既定で公開されている tax-law-mcp を参照します
-- 本番運用では Vercel の Environment Variables に TAX_BASE_URL を設定し、自分の tax-law-mcp URL に変えるのが安全です
-- hourei は XML を返します。これは元の hourei-mcp-server の仕様に合わせたものです
-- labor の get-law は e-Gov API v2 を使って、条文テキストを返します
+使い方:
+1. このフォルダの中身で、既存の legal-actions-bridge リポジトリを置き換える
+2. Vercel で再デプロイする
+3. openapi.yaml の YOUR-VERCEL-URL を実URLに置き換える
+4. ChatGPT の My GPT に新しい Action として追加する
